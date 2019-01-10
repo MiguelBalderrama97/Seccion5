@@ -27,9 +27,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        prefs = getSharedPreferences("Preference", Context.MODE_PRIVATE);
-
         bindUI();
+
+        prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+        setCredentialsIfExits();
+
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,6 +43,16 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void setCredentialsIfExits(){
+        String email = getUserMailPrefs();
+        String password = getUserPassPrefs();
+
+        if(!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)){
+            editTextEmail.setText(email);
+            editTextPassword.setText(password);
+        }
     }
 
     private void bindUI(){
@@ -80,10 +92,18 @@ public class LoginActivity extends AppCompatActivity {
         if(switchRemember.isChecked()){
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString("email", email);
-            editor.putString("password", password);
+            editor.putString("pass", password);
             editor.apply();
         }else{
 
         }
+    }
+
+    private String getUserMailPrefs(){
+        return prefs.getString("email", "");
+    }
+
+    private String getUserPassPrefs(){
+        return prefs.getString("pass", "");
     }
 }
