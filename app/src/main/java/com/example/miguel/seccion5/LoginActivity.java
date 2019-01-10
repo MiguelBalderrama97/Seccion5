@@ -1,6 +1,8 @@
 package com.example.miguel.seccion5;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,6 +15,8 @@ import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private SharedPreferences prefs;
+
     private EditText editTextEmail;
     private EditText editTextPassword;
     private Switch switchRemember;
@@ -23,8 +27,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        bindUI();
+        prefs = getSharedPreferences("Preference", Context.MODE_PRIVATE);
 
+        bindUI();
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -32,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
                 String password = editTextPassword.getText().toString();
                 if(login(email,password)){
                     goToMain();
+                    saveOnPreferences(email,password);
                 }
             }
         });
@@ -46,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean login(String email, String password){
         if(!isValidEmail(email)){
-            Toast.makeText(LoginActivity.this, "Emails is not valid, please try again", Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginActivity.this, "Email is not valid, please try again", Toast.LENGTH_LONG).show();
             return false;
         }else if(!isValidPassword(password)){
             Toast.makeText(LoginActivity.this, "Password is not valid, please try again", Toast.LENGTH_LONG).show();
@@ -61,12 +67,23 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean isValidPassword(String password){
-        return password.length() > 4;
+        return password.length() >= 4;
     }
 
     private void goToMain(){
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+    }
+
+    private void saveOnPreferences(String email, String password){
+        if(switchRemember.isChecked()){
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("email", email);
+            editor.putString("password", password);
+            editor.apply();
+        }else{
+
+        }
     }
 }
