@@ -1,4 +1,4 @@
-package com.example.miguel.seccion5;
+package com.example.miguel.seccion5.app;
 
 import android.app.Application;
 import android.os.SystemClock;
